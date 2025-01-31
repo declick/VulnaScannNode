@@ -28,7 +28,7 @@ const SENSITIVE_PATHS = [
 ];
 
 // Common ports to scan
-const COMMON_PORTS = Array.from({ length: 1024 }, (_, i) => i);
+const COMMON_PORTS = [80, 443, 22, 21, 8080, 3306, 5432, 8000, 8443];
 
 // Timeout for HTTP requests
 axios.defaults.timeout = 5000;
@@ -41,6 +41,7 @@ async function checkHeaders(url) {
         status: res.statusCode,
         headers: res.headers,
         missing: SECURITY_HEADERS.filter(h => !res.headers[h.toLowerCase()])
+        .map(h => `⚠️ ${h}`)
       });
     });
     req.on('error', () => resolve(null));
@@ -145,6 +146,100 @@ async function detectTechnologies(target) {
     return { server: 'Erreur lors de la requête', generator: 'N/A' };
   }
 }
+
+// Detect CORS misconfigurations
+async function checkCORS(url) {
+  const results = [];
+  const parsedUrl = new URL(url);
+
+  const securityTests = [
+    {
+      name: 'Reflect Origin sans validation',
+      method: 'GET',
+      headers: { Origin: 'http://evil.com' },
+      check: (res) => {
+        const acao = res.headers['access-control-allow-origin'];
+        return acao === 'http://evil.com' 
+          ? '⚠️ CORS : Reflect Origin sans validation' 
+          : '✅ Validation Origin correcte';
+      }
+    },
+    {
+      name: 'Wildcard avec credentials',
+      method: 'GET',
+      headers: { Origin: parsedUrl.origin },
+      withCredentials: true,
+      check: (res) => {
+        const isDangerous = res.headers['access-control-allow-origin'] === '*' 
+                          && res.headers['access-control-allow-credentials'] === 'true';
+        return isDangerous 
+          ? '⚠️ CORS : Configuration dangereuse (* + Allow-Credentials)' 
+          : '✅ Configuration Credentials sécurisée';
+      }
+    },
+    {
+      name: 'Méthodes HTTP permissives',
+      method: 'OPTIONS',
+      headers: {
+        Origin: parsedUrl.origin,
+        'Access-Control-Request-Method': 'PUT' 
+      },
+      check: (res) => {
+        const methods = res.headers['access-control-allow-methods']?.split(',').map(m => m.trim());
+        const risky = methods?.some(m => ['PUT', 'DELETE'].includes(m));
+        return risky 
+          ? `⚠️ CORS : Méthodes risquées autorisées (${methods})` 
+          : '✅ Méthodes HTTP sécurisées';
+      }
+    },
+    {
+      name: 'Validation des headers',
+      method: 'OPTIONS',
+      headers: {
+        Origin: parsedUrl.origin,
+        'Access-Control-Request-Headers': 'X-Evil-Header'
+      },
+      check: (res) => {
+        const allowedHeaders = res.headers['access-control-allow-headers']?.split(',').map(h => h.trim());
+        return allowedHeaders?.includes('X-Evil-Header') 
+          ? '⚠️ CORS : Header non validé autorisé' 
+          : '✅ Validation des headers correcte';
+      }
+    }
+  ];
+  try {
+    const httpUrl = url.replace('https://', 'http://');
+    const res = await axios.get(httpUrl, { maxRedirects: 0, validateStatus: null });
+    
+    if ([301, 302, 307, 308].includes(res.status)) {
+      results.push('✅ Redirection HTTPS correcte');
+    } else {
+      results.push('⚠️ CORS : HTTPS disponible en HTTP sans redirection');
+    }
+  } catch (error) {
+    results.push('✅ Redirection HTTPS correcte (Erreur contrôlée)');
+  }
+  for (const test of securityTests) {
+    try {
+      const res = await axios({
+        url,
+        method: test.method,
+        headers: test.headers,
+        withCredentials: test.withCredentials || false,
+        validateStatus: () => true 
+      });
+      results.push(test.check(res));
+    } catch (error) {
+      results.push(`⚠️ Erreur technique (${test.name}): ${error.message}`);
+    }
+  }
+  return results;
+}
+
+
+
+
+
 
 // Perform DNS lookup to find IP addresses
 async function performDNSLookup(domain) {
@@ -651,6 +746,7 @@ async function generateReport(target) {
 
     const techInfo = await detectTechnologies(target);
     const sensitiveFiles = await checkPaths(target);
+    const corsTestResults = await checkCORS(target);
     const dnsInfo = await performDNSLookup(hostname);
     const openPorts = await performPortScan(hostname);
     const insecureCookies = await checkCookies(target);
@@ -772,6 +868,14 @@ async function generateReport(target) {
       console.log('✅ Pas de vulnérabilité de fixation de session détectée');
     }
 
+    console.log('\n[Configuration CORS]:');
+    if (corsTestResults && corsTestResults.length > 0) {
+      corsTestResults.forEach(result => console.log(result));
+    }
+    else {
+      console.log('✅ Configuration CORS sécurisée');
+    }
+
     const timestamp = new Date().toISOString();
     const report = {
       timestamp,
@@ -780,6 +884,7 @@ async function generateReport(target) {
       httpResponseSplittingResults,
       openRedirectResults,
       technologies: techInfo,
+      corsTestResults,
       sensitiveFiles,
       dnsInfo,
       openPorts,
