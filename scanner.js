@@ -20,7 +20,7 @@ const SECURITY_HEADERS = [
 
 // Sensitive paths to check
 const SENSITIVE_PATHS = [
-  '/.env', '/.git/config', '/wp-config.php', '/phpinfo.php', '/admin/config.yml', 
+   '/env','/.env', '/.git/config', '/wp-config.php', '/phpinfo.php', '/admin/config.yml', 
   '/.htaccess', '/.bash_history', '/.ssh/authorized_keys', '/.aws/credentials', 
   '/config/database.yml', '/config/secrets.yml', '/logs/access.log', '/logs/error.log',
   '/backup.sql', '/database.sql', '/config.php', '/secret.key', '/id_rsa', '/id_rsa.pub',
@@ -236,11 +236,6 @@ async function checkCORS(url) {
   return results;
 }
 
-
-
-
-
-
 // Perform DNS lookup to find IP addresses
 async function performDNSLookup(domain) {
   try {
@@ -274,15 +269,13 @@ async function performPortScan(target) {
 // Check for insecure cookies
 async function checkCookies(url) {
   const insecureCookies = [];
-  const secureCookies = [];
   try {
     const res = await axios.get(url);
     const cookies = res.headers['set-cookie'] || [];
     cookies.forEach(cookie => {
       const cookieDetails = parseCookie(cookie);
       if (cookieDetails.secure && cookieDetails.httpOnly) {
-        secureCookies.push(`✅ Cookie sécurisé détecté: ${cookie}`);
-      } else {
+
         insecureCookies.push(`⚠️ Cookie non sécurisé détecté: ${cookie}`);
       }
       if (!cookieDetails.sameSite || (cookieDetails.sameSite === 'None' && !cookieDetails.secure)) {
@@ -291,17 +284,14 @@ async function checkCookies(url) {
     });
     return {
       insecureCookies,
-      secureCookies
     };
   } catch (error) {
     console.error(`Erreur lors de la récupération des cookies : ${error.message}`);
     return {
       insecureCookies: ["⚠️ Erreur lors de la récupération des cookies"],
-      secureCookies: []
     };
   }
 }
-
 function parseCookie(cookie) {
   const cookieDetails = {
     secure: false,
