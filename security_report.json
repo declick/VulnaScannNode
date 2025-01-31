@@ -1,0 +1,103 @@
+{
+  "timestamp": "2025-01-31T16:18:12.390Z",
+  "target": "https://myafawa.com/",
+  "headers": {
+    "missing": [
+      "content-security-policy",
+      "permissions-policy",
+      "x-xss-protection",
+      "x-permitted-cross-domain-policies",
+      "expect-ct",
+      "x-download-options",
+      "x-dns-prefetch-control"
+    ]
+  },
+  "technologies": {
+    "server": "nginx",
+    "generator": "Aucun"
+  },
+  "sensitiveFiles": [
+    "https://myafawa.com/admin/config.yml",
+    "https://myafawa.com/config/secrets.yml",
+    "https://myafawa.com/logs/error.log",
+    "https://myafawa.com/config/database.yml",
+    "https://myafawa.com/logs/access.log",
+    "https://myafawa.com/secret.key",
+    "https://myafawa.com/id_rsa",
+    "https://myafawa.com/composer.lock",
+    "https://myafawa.com/id_rsa.pub",
+    "https://myafawa.com/backup.sql",
+    "https://myafawa.com/docker-compose.yml",
+    "https://myafawa.com/database.sql",
+    "https://myafawa.com/robots.txt",
+    "https://myafawa.com/nginx.conf",
+    "https://myafawa.com/composer.json"
+  ],
+  "dnsInfo": [
+    {
+      "address": "146.59.227.7",
+      "family": 4
+    }
+  ],
+  "openPorts": [
+    80,
+    443,
+    22
+  ],
+  "insecureCookies": [
+    "ci_session=j4cqosc59rnhpsjlgs925v69c2m8cn2j; expires=Fri, 31-Jan-2025 18:18:09 GMT; Max-Age=7200; path=/; HttpOnly"
+  ],
+  "xssResults": [
+    "✅ Aucune vulnérabilité détectée"
+  ],
+  "hasSQLiVulnerability": [
+    "✅ Aucune vulnérabilité détectée"
+  ],
+  "hasLFIVulnerability": [
+    "✅ Aucune vulnérabilité détectée"
+  ],
+  "jwtResults": [
+    "⚠️  Jeton JWT avec algorithme \"none\" accepté",
+    "⚠️  Jeton JWT expiré accepté",
+    "⚠️  Jeton JWT avec l'algorithme \"HS256\" accepté et payload: {\"user\":\"admin\",\"role\":\"admin\"}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS256\" accepté et payload: {\"user\":\"attacker\",\"role\":\"user\"}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS256\" accepté et payload: {\"exp\":1738340230}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS256\" accepté et payload: {\"exp\":1738343890}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS256\" accepté et payload: {\"foo\":\"bar\"}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS384\" accepté et payload: {\"user\":\"admin\",\"role\":\"admin\"}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS384\" accepté et payload: {\"user\":\"attacker\",\"role\":\"user\"}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS384\" accepté et payload: {\"exp\":1738340230}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS384\" accepté et payload: {\"exp\":1738343890}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS384\" accepté et payload: {\"foo\":\"bar\"}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS512\" accepté et payload: {\"user\":\"admin\",\"role\":\"admin\"}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS512\" accepté et payload: {\"user\":\"attacker\",\"role\":\"user\"}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS512\" accepté et payload: {\"exp\":1738340230}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS512\" accepté et payload: {\"exp\":1738343890}",
+    "⚠️  Jeton JWT avec l'algorithme \"HS512\" accepté et payload: {\"foo\":\"bar\"}"
+  ],
+  "graphqlResults": [
+    "✅ Aucune vulnérabilité détectée"
+  ],
+  "bruteforceResults": [
+    "⚠️ Répertoire accessible : https://myafawa.com//admin (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//hidden (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//backup (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//private (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//config (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//secure (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//data (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//files (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//logs (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//temp (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//management (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//api (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//static (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//wp-admin (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//admin_panel (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//dashboard (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//cms (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//db_backup (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//test (Status: 200 OK)",
+    "⚠️ Répertoire accessible : https://myafawa.com//public (Status: 200 OK)"
+  ]
+}
