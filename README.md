@@ -1,6 +1,6 @@
 # VulnaScannNode
 
-VulnaScannNode est un outil de scan de vulnérabilités pour les applications Node.js. Il permet de détecter les failles de sécurité potentielles dans les dépendances de votre projet.
+VulnaScannNode est un outil de scan de vulnérabilités pour les applications. Il permet de détecter les failles de sécurité potentielles sur votre site web.
 
 ## Installation
 
